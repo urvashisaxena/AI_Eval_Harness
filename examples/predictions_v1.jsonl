@@ -1,0 +1,5 @@
+{"case_id": "billing-refund", "model": "acme-rag-v1", "answer": "Annual Acme Cloud subscriptions may be refunded in full within 30 days of purchase. After the 30 day window refunds are prorated for unused months."}
+{"case_id": "api-rate-limit", "model": "acme-rag-v1", "answer": "The Acme Cloud free tier default API rate limit is 60 requests per minute per API key."}
+{"case_id": "sso-support", "model": "acme-rag-v1", "answer": "SAML single sign-on support is available on the Acme Cloud Enterprise plan only."}
+{"case_id": "data-region", "model": "acme-rag-v1", "answer": "Acme Cloud customers choose data storage in the US, EU, or Asia Pacific regions at workspace creation."}
+{"case_id": "backup-retention", "model": "acme-rag-v1", "answer": "Acme Cloud retains automatic backups for 35 days on all plans."}
