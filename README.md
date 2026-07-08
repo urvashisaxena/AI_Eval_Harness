@@ -10,6 +10,15 @@ datasets, built on four ideas:
 | **Hallucination rate** | Answers are decomposed into atomic claims; each claim is checked against the retrieved contexts + ground truth. Unsupported claims count as hallucinations. |
 | **Regression tracking** | Every run is stored with dataset hash, model, judge, and per-case evidence. Runs are gated against absolute thresholds *and* a stored baseline — a regression fails CI. |
 
+## Demo
+
+![evalharness demo: v1 becomes baseline, v2 hallucinates and fails the governance gate, scorecard rendered](examples/demo.gif)
+
+The same demo is available as an MP4 at [`examples/demo.mp4`](examples/demo.mp4).
+Regenerate it any time with `python scripts/make_demo.py` (needs
+`pip install pillow imageio imageio-ffmpeg`) — it runs the real CLI and renders
+the captured output as an animated terminal session.
+
 ## Install
 
 ```bash
