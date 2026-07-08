@@ -1,0 +1,35 @@
+# evalharness configuration
+#
+# judge: "anthropic" for real LLM-as-judge grading (needs ANTHROPIC_API_KEY),
+#        "heuristic" for offline deterministic scoring (tests / smoke runs).
+judge: anthropic
+judge_model: claude-opus-4-8
+
+metrics:
+  - llm_rubric          # judge-graded rubric (correctness, completeness, clarity, safety)
+  - faithfulness        # RAGAS: answer claims supported by retrieved contexts
+  - answer_relevancy    # RAGAS: answer addresses the question
+  - context_precision   # RAGAS: retrieved contexts relevant to the question
+  - context_recall      # RAGAS: contexts cover the ground-truth claims
+  - hallucination_rate  # unsupported-claim rate (lower is better)
+
+# Governance gates. `min`/`max` are absolute floors/ceilings for a run;
+# `max_regression` is the largest tolerated movement in the *worse* direction
+# versus the stored baseline. Any violation fails the gate (exit code 1).
+thresholds:
+  llm_rubric:
+    min: 0.60
+    max_regression: 0.05
+  faithfulness:
+    min: 0.70
+    max_regression: 0.05
+  answer_relevancy:
+    min: 0.60
+    max_regression: 0.10
+  context_precision:
+    min: 0.50
+  context_recall:
+    min: 0.50
+  hallucination_rate:
+    max: 0.25          # at most 25% of claims unsupported
+    max_regression: 0.05

@@ -1,0 +1,25 @@
+# Offline CI config: deterministic heuristic judge, no API keys required.
+# Use configs/default.yaml (judge: anthropic) for real evaluations.
+judge: heuristic
+
+metrics:
+  - llm_rubric
+  - faithfulness
+  - answer_relevancy
+  - context_precision
+  - context_recall
+  - hallucination_rate
+
+thresholds:
+  llm_rubric:
+    min: 0.60
+    max_regression: 0.05
+  faithfulness:
+    min: 0.70
+    max_regression: 0.05
+  answer_relevancy:
+    min: 0.60
+    max_regression: 0.10
+  hallucination_rate:
+    max: 0.25
+    max_regression: 0.05

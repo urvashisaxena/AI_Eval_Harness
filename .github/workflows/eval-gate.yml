@@ -1,0 +1,60 @@
+# Example governance gate: score the candidate predictions and fail the build
+# on any threshold violation or baseline regression.
+#
+# This demo uses the offline heuristic judge so it runs without secrets.
+# For real evaluations switch the config to `judge: anthropic` and provide
+# ANTHROPIC_API_KEY as a repository secret.
+name: eval-gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install harness
+        run: pip install -e ".[dev]"
+
+      - name: Unit tests
+        run: python -m pytest tests/ -q
+
+      - name: Establish baseline (v1)
+        run: |
+          evalharness run --dataset examples/dataset.jsonl \
+            --predictions examples/predictions_v1.jsonl \
+            --label v1 --judge heuristic --set-baseline
+
+      - name: Gate candidate (v2) against baseline
+        id: gate
+        continue-on-error: true   # demo only — drop this line in a real repo
+        run: |
+          evalharness run --dataset examples/dataset.jsonl \
+            --predictions examples/predictions_v2.jsonl \
+            --label v2 --judge heuristic \
+            --config configs/ci-heuristic.yaml --gate
+
+      - name: Render scorecard
+        if: always()
+        run: |
+          RUN_ID=$(ls .evalharness/runs | sort | tail -1 | sed 's/\.json//')
+          evalharness scorecard "$RUN_ID" --config configs/ci-heuristic.yaml \
+            -o scorecard.md --html scorecard.html
+          cat scorecard.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-scorecard
+          path: |
+            scorecard.md
+            scorecard.html
+            .evalharness/runs/
